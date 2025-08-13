@@ -514,14 +514,17 @@ static void set_new_backlight(void) {
         DEBUG("Content calib: wmax: %.3lf, wmin: %.3lf, new_bl: %.3lf\n", 
               wmax, wmax - 2 * conf.screen_conf.contrib, bl_req.bl.new);
     }
+    bool should_update_bl = (fabs(bl_req.bl.new - state.current_bl_pct) >= conf.bl_conf.smooth.trans_step);
     // Less verbose: only log real backlight changes, unless we are in verbose mode
-    if (bl_req.bl.new != state.current_bl_pct || conf.verbose) {
+    if (should_update_bl || conf.verbose) {
         if (state.screen_br == 0.0f) {
             INFO("Ambient brightness: %.3lf -> Screen backlight: %.3lf.\n", state.ambient_br, bl_req.bl.new);
         } else {
             INFO("Ambient brightness: %.3lf, Screen brightness: %.3lf -> Screen backlight: %.3lf.\n", 
                  state.ambient_br, state.screen_br, bl_req.bl.new);
         }
+    }
+    if (should_update_bl) {
         M_PUB(&bl_req);
     }
 }
