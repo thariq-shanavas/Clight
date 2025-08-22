@@ -262,10 +262,10 @@ static void on_suspend_req(suspend_upd *up) {
                 M_PUB(suspend_msg);
             }
         }
+
+       /* Count currently held suspends */
+        if (up->new) {
+            suspend_ctr++;
+        }
     }
-    /* Count currently held suspends */
-    if (up->new) {
-        suspend_ctr++;
-    }
-    DEBUG("Suspend ctr: %d\n", suspend_ctr);
 }
